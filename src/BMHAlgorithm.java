@@ -15,12 +15,11 @@ BMHAlgorithm {
 
     String printCost(String sentence, String word){
         int comparison = word.length() - 1, step = word.length() - 1;
-        boolean found = false, oversize = false;
 
         char[] sentenceChars = sentence.toLowerCase().toCharArray(), wordChars = word.toLowerCase().toCharArray();
         setCharCosts(word);
 
-        while (!oversize && !found){
+        while (comparison != 0 && step < sentenceChars.length){
 
             if (sentenceChars[step] != wordChars[comparison]){
 
@@ -35,18 +34,15 @@ BMHAlgorithm {
             }
 
             this.cost++;
-
-            if (comparison == 0) found = true;
-            if (step > sentenceChars.length) oversize = true;
         }
 
         this.cost++;
 
-        if (oversize){
-            return "Le mot n'a pas été trouvé.";
+        if (comparison == 0){
+            return "Le coût de la recherche est de " + cost + ".";
         }
-        else if (found){
-            return "Le coût de la recherche est de " + cost;
+        else if (step >= sentenceChars.length){
+            return "Le mot n'a pas été trouvé.";
         }
         else{
             return "Il y a eu un problème.";
