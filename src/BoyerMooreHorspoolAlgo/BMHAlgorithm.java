@@ -1,3 +1,5 @@
+package BoyerMooreHorspoolAlgo;
+
 import java.util.Hashtable;
 
 class
