@@ -1,45 +1,67 @@
 import java.util.Hashtable;
 
-class BMHAlgorithm {
+class
+BMHAlgorithm {
 
-    private char[] sentenceChars; // sentence set in parameter transformed in chars array
-    private int cost = 0; // search's cost
+    private int cost = 0;
     private Hashtable<Character, Integer> charCosts = new Hashtable<>();
+    private char chrDefault = '*';
+
+    private void initialize(){
+        this.cost = 0;
+        this.charCosts.clear();
+    }
 
 
-    void printCost(String sentence, String word){
+    String printCost(String sentence, String word){
+        int comparison = word.length() - 1, step = word.length() - 1;
+        boolean found = false, oversize = false;
 
-        int comparison = word.length(), step = word.length();
-        boolean found = false;
+        char[] sentenceChars = sentence.toLowerCase().toCharArray(), wordChars = word.toLowerCase().toCharArray();
+        setCharCosts(word);
 
-        while (!found){
+        while (!oversize && !found){
 
-            step = charCosts.get(sentenceChars[step]);
+            if (sentenceChars[step] != wordChars[comparison]){
 
-            if (comparison == 0){ // if the entire word matches in the sentence
-                found = true;
+                if (!charCosts.containsKey(sentenceChars[step])) step += this.charCosts.get(chrDefault);
+                else step += this.charCosts.get(sentenceChars[step]);
+
+                comparison = word.length() - 1;
+            }
+            else{
+                step--;
+                comparison--;
             }
 
             this.cost++;
+
+            if (comparison == 0) found = true;
+            if (step > sentenceChars.length) oversize = true;
         }
 
-        this.sentenceChars = sentence.toCharArray();
+        this.cost++;
 
-        setCharCosts(word);
-
-        System.out.println(this.charCosts);
+        if (oversize){
+            return "Le mot n'a pas été trouvé.";
+        }
+        else if (found){
+            return "Le coût de la recherche est de " + cost;
+        }
+        else{
+            return "Il y a eu un problème.";
+        }
     }
 
     private void setCharCosts(String word){
+        this.initialize();
 
         for (int i = 0; i < word.length(); i++){
-            if (i == (word.length() - 1)) charCosts.put(word.charAt(i), word.length());
-            else charCosts.put(word.charAt(i), ( word.length() - i - 1));
+            if (i == (word.length() - 1)) this.charCosts.put(word.charAt(i), word.length());
+            else this.charCosts.put(word.charAt(i), ( word.length() - i - 1));
         }
 
-        charCosts.remove(word.charAt(word.length() - 1));
-        charCosts.put('*', word.length());
-
+        this.charCosts.remove(word.charAt(word.length() - 1));
+        this.charCosts.put(chrDefault, word.length());
     }
-
 }
